@@ -34,3 +34,41 @@ The project uses six valid datacenter software components:
 4. Databases: Prometheus internal time-series storage
 5. Virtual Machines and Containers: Full deployment within Docker containers on a GCP VM
 6. Monitoring Systems: Prometheus for scraping and Grafana for visualization
+
+---
+## Verification of System Operation
+
+### ONOS Metrics via REST
+```bash
+curl -u onos:rocks http://<external_ip>:8181/onos/v1/metrics
+
+Expected output:
+
+{
+  "metrics":[
+    {
+      "name":"Mastership.requestRole.responseTime",
+      "metric":{"timer":{"counter":0,"mean":0.0}}
+    }
+  ]
+}
+## Exporter Endpoint
+
+```bash
+curl http://localhost:9000/metrics
+
+Expected output:
+
+onos_up 1
+onos_error 0
+Mastership_requestRole_responseTime 0
+
+## Prometheus Target Health
+curl http://localhost:9090/api/v1/targets
+
+
+Expected:
+
+exporter:9000 listed with health status "up"
+
+onos:8181 listed as active scrape target

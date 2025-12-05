@@ -1,0 +1,35 @@
+services:
+  onos:
+    image: onosproject/onos
+    container_name: onos
+    network_mode: "bridge"
+    ports:
+      - "8181:8181"
+      - "6653:6653"
+    environment:
+      - ONOS_WEB_USER=onos
+      - ONOS_WEB_PASS=rocks
+
+  exporter:
+    build: .
+    container_name: exporter
+    ports:
+      - "9000:9000"
+    environment:
+      - ONOS_HOST=35.202.187.164  # your VM IP
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+
+

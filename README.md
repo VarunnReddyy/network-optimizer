@@ -74,4 +74,7 @@ Planned enhancements beyond the course submission:
 - Traffic generation and benchmarking through Mininet  
 - Performance comparison between static and AI-optimized routing strategies
 
-
+## Project Participents
+- Varun Reddy Mamidal
+- Chandana Sunkara
+  

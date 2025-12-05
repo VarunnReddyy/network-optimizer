@@ -1,59 +1,36 @@
 # AI-Driven Adaptive Data Center Network Optimizer
 
 ## Overview
-This project sets up a cloud-hosted Software-Defined Network (SDN) controller and a monitoring pipeline to collect real-time data center metrics. The goal is to build the operational foundation for an adaptive, AI-enhanced routing optimizer that detects congestion and applies routing updates dynamically.
+This project implements a cloud-hosted Software-Defined Networking (SDN) controller and a complete monitoring pipeline for real-time data center telemetry. The objective is to build the operational foundation required for an AI-driven routing optimizer that detects congestion and dynamically adjusts traffic paths to improve network performance.
 
-At this stage, the system runs on a Google Cloud VM, deploys all core network components as Docker containers, exposes ONOS metrics through a custom exporter, and scrapes them with Prometheus for visualization in Grafana.
+The system is deployed on a Google Cloud Compute VM (Ubuntu 22.04) and uses Docker containers to run ONOS, Prometheus, Grafana, and a custom Python-based metrics exporter. Metrics from ONOS are extracted through its REST API, normalized, and exposed to Prometheus in text format. Grafana dashboards provide live visual monitoring.
 
 ---
 
-## Core Architecture
+## System Components
 
 ### Cloud Infrastructure
-- **Google Cloud Compute VM** (Ubuntu 22.04)
-- Public IP used to access ONOS metrics, Prometheus UI, and Grafana dashboard
+- Google Cloud Compute Engine VM (Ubuntu 22.04)
+- Public IP address used for external access
 
-### Containers / Services
-| Component | Purpose |
-|----------|---------|
-| **ONOS SDN Controller** | Provides REST APIs and internal metrics for network state (Mastership, topology, packet flow paths, etc.) |
-| **ONOS Metrics Exporter** (Flask) | Fetches ONOS metrics and exposes them in Prometheus format |
-| **Prometheus** | Scrapes metrics from ONOS and the exporter container |
-| **Grafana** | Visualizes metrics through dashboards |
-| **Docker Network (sdnnet)** | Internal isolated network for inter-container communication |
-
----
-
-## Why This Satisfies Course Requirements
-
-Your project must use **four datacenter software components**.  
-This implementation actually uses **six**:
-
-✔ RPC / API Interfaces  
-→ ONOS REST API calls at:  
-`http://<external_ip>:8181/onos/v1/metrics`
-
-✔ Message Marshalling  
-→ JSON metrics from ONOS parsed and converted to Prometheus text format
-
-✔ Database  
-→ Prometheus embedded time-series database (TSDB)
-
-✔ Virtual Machines / Containers  
-→ GCP VM + Dockerized services (ONOS, exporter, Prometheus, Grafana)
-
-✔ Software-Defined Networking  
-→ ONOS SDN controller managing virtual data center topology
-
-✔ Monitoring Stack  
-→ Prometheus metric scraping, Grafana visualization
-
-This alone meets and exceeds the requirement.
+### Docker Services
+| Component | Description |
+|----------|------------|
+| ONOS SDN Controller | Exposes network metrics and manages device mastership and topology tables |
+| Metrics Exporter (Flask) | Converts ONOS REST API metrics to Prometheus-compatible format |
+| Prometheus | Scrapes metrics and stores them in a time-series database |
+| Grafana | Renders the collected metrics through dashboards |
+| Private Docker Network (sdnnet) | Allows internal communication between components |
 
 ---
 
-## Key Functional Demonstrations
+## Mapping to Course Requirements
 
-### 1. ONOS Metrics Retrieval
-```bash
-curl -u onos:rocks http://<external_ip>:8181/onos/v1/metrics
+The project uses six valid datacenter software components:
+
+1. Software Defined Networking: ONOS manages the virtual network
+2. RPC/API Interfaces: JSON REST communication with ONOS metrics endpoint
+3. Message Marshalling and Encoding: ONOS JSON metrics converted into Prometheus text format
+4. Databases: Prometheus internal time-series storage
+5. Virtual Machines and Containers: Full deployment within Docker containers on a GCP VM
+6. Monitoring Systems: Prometheus for scraping and Grafana for visualization

@@ -63,7 +63,97 @@ The monitoring and telemetry components are fully implemented and functioning:
 - Source code is maintained on GitHub
 
 ---
+## Running the Project Using Docker Compose
 
+This project is fully containerized. The entire monitoring stack can be started using Docker Compose.
+
+### Prerequisites
+Ensure the following are installed on the host machine:
+- Docker
+- Docker Compose
+
+To verify:
+
+`docker --version
+docker compose version`
+
+## Build and Start the Stack
+From inside the project directory:
+`docker compose up -d --build`
+
+This command:
+- builds the exporter image
+- launches ONOS, Prometheus, Grafana, and the exporter
+
+## Verify Running Containers:
+`docker ps`
+
+Expected containers:
+- onos
+- exporter
+- prometheus
+- grafana
+
+## Verifying Component Status
+1. Confirm Prometheus Targets
+curl http://localhost:9090/api/v1/targets
+
+Expected result:
+- onos_exporter target should show "health": "up"
+
+2. Confirm Exporter is Exporting Metrics
+curl http://localhost:9000/metrics
+
+Expected metrics:
+onos_up 1
+onos_error 0
+Mastership_requestRole_responseTime 0
+
+3. Confirm ONOS REST Metrics
+curl -u onos:rocks http://<external_ip>:8181/onos/v1/metrics
+
+Replace <external_ip> with the public VM IP if running on a cloud instance.
+
+A JSON metrics response should be returned.
+
+## Access Prometheus UI
+
+Open a browser:
+
+http://<external_ip>:9090
+
+Access Grafana
+http://<external_ip>:3000
+
+Default login:
+
+admin / admin
+
+Add Prometheus Data Source in Grafana
+
+In Grafana:
+
+Settings → Data Sources
+
+Add Prometheus
+
+Use this endpoint:
+
+http://prometheus:9090
+
+## Recommended Grafana Metrics
+
+Add panels for:
+- onos_up
+- onos_error
+- Mastership_requestRole_responseTime
+
+These values update in real time as Prometheus scrapes ONOS metrics through the exporter.
+Stopping the Stack
+docker compose down
+
+
+---
 ## Future Extensions
 
 Planned enhancements beyond the course submission:

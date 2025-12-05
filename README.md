@@ -36,39 +36,42 @@ The project uses six valid datacenter software components:
 6. Monitoring Systems: Prometheus for scraping and Grafana for visualization
 
 ---
-## Verification of System Operation
+## Exporter Logic Summary
 
-### ONOS Metrics via REST
-```bash
-curl -u onos:rocks http://<external_ip>:8181/onos/v1/metrics
+- Sends HTTP requests to the ONOS REST metrics API  
+- Parses JSON responses returned by ONOS  
+- Extracts timer-based internal metrics  
+- Reformats the data into Prometheus-compatible text format  
+- Serves the metrics through the `/metrics` endpoint on port `9000`
 
-Expected output:
+### Metrics Published
+- `onos_up`
+- `onos_error`
+- `Mastership_requestRole_responseTime`
 
-{
-  "metrics":[
-    {
-      "name":"Mastership.requestRole.responseTime",
-      "metric":{"timer":{"counter":0,"mean":0.0}}
-    }
-  ]
-}
-## Exporter Endpoint
+---
 
-```bash
-curl http://localhost:9000/metrics
+## Current Status
 
-Expected output:
+The monitoring and telemetry components are fully implemented and functioning:
 
-onos_up 1
-onos_error 0
-Mastership_requestRole_responseTime 0
+- ONOS is reachable through its REST interface  
+- The exporter successfully converts ONOS metrics into Prometheus format  
+- Prometheus scrapes metrics from the exporter container  
+- Grafana dashboards display the collected data  
+- Deployment is hosted on a Google Cloud VM  
+- Source code is maintained on GitHub
 
-## Prometheus Target Health
-curl http://localhost:9090/api/v1/targets
+---
+
+## Future Extensions
+
+Planned enhancements beyond the course submission:
+
+- Integration of a reinforcement learning model for dynamic routing  
+- Automated ONOS route updates through its REST API  
+- Expansion of metric collection (latency thresholds, link utilization)  
+- Traffic generation and benchmarking through Mininet  
+- Performance comparison between static and AI-optimized routing strategies
 
 
-Expected:
-
-exporter:9000 listed with health status "up"
-
-onos:8181 listed as active scrape target
